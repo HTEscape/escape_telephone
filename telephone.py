@@ -4,6 +4,9 @@ class telephone:
         self.dialTone = dialTone
         self.ringerMessage = ringerMessage
         self.wrongNumberMessage = wrongNumberMessage
+    def returnPhoneSettingsList(self):
+        returnList = [self.ringer, self.dialTone, self.ringerMessage, self.wrongNumberMessage]
+        return returnList
 
 class trigger:
     def __init__(self, unlockCode=None, isActive=False, triggerMessage=None,
@@ -22,7 +25,7 @@ class trigger:
         self.relayMessageTiming = relayMessageTiming
         self.messageFile = messageFile
 
-    def returnTriggerValues(self):
+    def returnTriggerValuesList(self):
         returnList = [self.unlockCode, self.isActive, self.triggerMessage, self.relayMode, self.relayActiveTime, self.relayActive,
                       self.relayTimer, self.relayMessageTiming, self.messageFile]
         return returnList

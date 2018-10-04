@@ -1,0 +1,29 @@
+{
+  "phone settings": [
+    {
+      "number": 1,
+      "ringer": true,
+      "dial tone": true,
+      "ringer message": true,
+      "wrong number": "wrong Number File.mp3"
+    }
+  ],
+  "triggers": [
+    {
+      "number": 1,
+      "unlock code": [
+        2,
+        6,
+        0,
+        7
+      ],
+      "is active": true,
+      "trigger message": null,
+      "relay mode": "time",
+      "relay active time": 1,
+      "relay active": true,
+      "relay message timing": "beginning",
+      "message file": "message file name.mp3"
+    }
+  ]
+}

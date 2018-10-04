@@ -1,11 +1,13 @@
 class telephone:
-    def __init__(self, ringer=True, dialTone=True, ringerMessage=True, wrongNumberMessage='wrong Number File.mp3'):
+    def __init__(self, number=None, ringer=True, dialTone=True, ringerMessage=True,
+                 wrongNumberMessage='wrong Number File.mp3'):
+        self.number = number
         self.ringer = ringer
         self.dialTone = dialTone
         self.ringerMessage = ringerMessage
         self.wrongNumberMessage = wrongNumberMessage
     def returnPhoneSettingsList(self):
-        returnList = [self.ringer, self.dialTone, self.ringerMessage, self.wrongNumberMessage]
+        returnList = [self.number, self.ringer, self.dialTone, self.ringerMessage, self.wrongNumberMessage]
         return returnList
 
 class trigger:

@@ -18,14 +18,18 @@ for i in range(len(loaded_data['phone settings'])):
     phone_temp = telephone(temp_list['number'], temp_list['ringer'], temp_list['dial tone'],
                            temp_list['ringer message'], temp_list['wrong number'])
     phones_list.append(phone_temp)
-'''
-for i in range(len(loaded_data['cycles'])):
-    temp_list = loaded_data['cycles'][i]
-    cycle_temp = cycle(temp_list['number'], temp_list['name'], temp_list['start time hour'],
-                       temp_list['start time minute'], temp_list['days of week'], temp_list['stations'],
-                       temp_list['durations'], temp_list['enabled'])
-    cycle_list.append(cycle_temp)
-'''
+
+for i in range(len(loaded_data['triggers'])):
+    temp_list = loaded_data['triggers'][i]
+    trigger_temp = trigger(temp_list['number'], temp_list['unlock code'], temp_list['is active'],
+                           temp_list['trigger message'], temp_list['relay mode'], temp_list['relay active time'],
+                           temp_list['relay active'], temp_list['relay message timing'], temp_list['message file'])
+    triggers_list.append(trigger_temp)
+
 del temp_list
 
 print(phones_list[0].returnPhoneSettingsList())
+phones_list[0].wrongNumberMessage = "new file name.mp3"
+print(phones_list[0].returnPhoneSettingsList())
+
+print(triggers_list[0].returnTriggerValuesList())

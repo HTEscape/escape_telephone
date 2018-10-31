@@ -41,6 +41,7 @@ for i in range(len(triggers_list)):
 def send_settings():
     global triggers_list
     global phones_list
+    trigger_settings = []
     active_phone = None
     for i in range(len(phones_list)):
         if phones_list[i].isActive == True:
@@ -73,9 +74,28 @@ def send_settings():
 
         count = 0
         for j in range(len(triggers_list)):
-            if (triggers_list[j].id // 100) == phones_list[active_phone].number:
-                if triggers_list[j].isActive == True:
-                    count = count + 1
+            if ((triggers_list[j].id // 100) == phones_list[active_phone].number) and (triggers_list[j].isActive == True):
+                temp_trigger = "<TRIGGER,"
+                for i in triggers_list[j].unlockCode:
+                    temp_trigger += str(i)
+                temp_trigger +=  ',' + str(triggers_list[j].id) + ',' + str(triggers_list[j].triggerMessage) + ','
+
+                if triggers_list[j].relayMode == None:
+                    temp_trigger += '0,'
+                elif triggers_list[j].relayMode == "time":
+                    temp_trigger += '1,'
+                else:
+                    temp_trigger += '2,'
+
+                temp_trigger += str(triggers_list[j].relayActiveTime) + ','
+
+                if triggers_list[j].relayMessageTiming == "beginning":
+                    temp_trigger += '0>'
+                else:
+                    temp_trigger += '1>'
+
+                trigger_settings.append(temp_trigger)
+                count = count + 1
 
         if count == 0:
             phoneSettings += '0>'
@@ -86,8 +106,13 @@ def send_settings():
             phoneSettings += '>'
             # send settings    -----TO DO-----
 
+
+
+
     print("Here are the current phone settings")
     print(phoneSettings)
+    print("Here are the current Triggers")
+    print(trigger_settings)
 
 
 send_settings()

@@ -11,9 +11,10 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(MP3_PLAYING_PIN, GPIO.OUT, initial=0)
 pygame.mixer.init()
-triggers_list = []
-phones_list = []
-trigger_settings = []
+triggers_list = []  # Dict's with all trigger settings
+phones_list = []  # Dict's with all phone settings
+trigger_settings = []  # List of strings with trigger settings to send to Arduino
+global phone_settings
 
 
 def get_phone_settings():
@@ -102,29 +103,29 @@ def send_settings():
             active_phone = k
             break
 
-    phoneSettings = "<PHONE,"
+    phone_settings = "<PHONE,"
     if active_phone is None:
-        phoneSettings += "0,0,0,0,0>"
+        phone_settings += "0,0,0,0,0>"
     else:
         if phones_list[active_phone].ringer is True:
-            phoneSettings += '1,'
+            phone_settings += '1,'
         else:
-            phoneSettings += '0,'
+            phone_settings += '0,'
 
         if phones_list[active_phone].dialTone is True:
-            phoneSettings += '1,'
+            phone_settings += '1,'
         else:
-            phoneSettings += '0,'
+            phone_settings += '0,'
 
         if phones_list[active_phone].ringerMessage is True:
-            phoneSettings += '1,'
+            phone_settings += '1,'
         else:
-            phoneSettings += '0,'
+            phone_settings += '0,'
 
         if phones_list[active_phone].wrongNumberMessage is True:
-            phoneSettings += '1,'
+            phone_settings += '1,'
         else:
-            phoneSettings += '0,'
+            phone_settings += '0,'
 
         count = 0
         for j in range(len(triggers_list)):
@@ -153,16 +154,13 @@ def send_settings():
                 count = count + 1
 
         if count == 0:
-            phoneSettings += '0>'
-            # send settings    -----TO DO-----
-            return
+            phone_settings += '0>'
         else:
-            phoneSettings += str(count)
-            phoneSettings += '>'
-            # send settings    -----TO DO-----
+            phone_settings += str(count)
+            phone_settings += '>'
 
     print("Here are the current phone settings")
-    print(phoneSettings)
+    print(phone_settings)
     print("Here are the current Triggers")
     print(trigger_settings)
 
@@ -196,17 +194,22 @@ while True:
             arduino.write(b"<CONNECT>")
         elif received == "<SETTINGS>":
             print(received)
-            arduino.write(b"<PHONE,1,1,1,1,2>")
+            arduino.write(phone_settings.encode())
+            # arduino.write(b"<PHONE,1,1,1,1,2>")
         elif received == "<TRIGGERS>":
             print(received)
-            arduino.write(b"<TRIGGER,123456,101,1,1,1,5,1>")
-            while arduino.in_waiting == 0:
-                time.sleep(.01)
-            received = arduino.readline().decode("utf-8")[:-1]
-            if received == "<NEXT>":
-                arduino.write(b"<TRIGGER,987654,102,1,1,1,10,1>")
-            else:
-                print("Did not receive the <NEXT> command.  Received:", received)
+            for i in range(len(trigger_settings)):
+                arduino.write(trigger_settings[i].encode())
+                # arduino.write(b"<TRIGGER,123456,101,1,1,1,5,1>")
+                if i < len(trigger_settings) - 1:
+                    while arduino.in_waiting == 0:
+                        time.sleep(.01)
+                    received = arduino.readline().decode("utf-8")[:-1]
+                    if received == "<NEXT>":
+                        print("Sending next trigger...")
+                    else:
+                        print("Did not receive the <NEXT> command.  Received:", received)
+                        break
         elif (received == '<RING MESSAGE>'):
             playAudio("Ring Message.mp3")
         else:

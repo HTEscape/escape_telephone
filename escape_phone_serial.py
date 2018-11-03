@@ -14,7 +14,7 @@ pygame.mixer.init()
 triggers_list = []  # Dict's with all trigger settings
 phones_list = []  # Dict's with all phone settings
 trigger_settings = []  # List of strings with trigger settings to send to Arduino
-global phone_settings
+phone_settings = None
 
 
 def get_phone_settings():
@@ -47,7 +47,7 @@ def playAudio(fileName):
     print(audioFile)
     pygame.mixer.music.load(audioFile)
     pygame.mixer.music.play()
-    while pygame.mixer.music.get_busy() is True:
+    while pygame.mixer.music.get_busy() == True:
         if (arduino.in_waiting):
             received_line = arduino.readline().decode("utf-8")[1:-2]
             if (received_line == "STOP"):
@@ -59,14 +59,15 @@ def playAudio(fileName):
 
 
 def playRingtone(length=None):
-    if length is None:
+    if length == None:
         GPIO.output(MP3_PLAYING_PIN, 1)
         pygame.mixer.music.load("/home/pi/escape_phone_app/Audio Files/ringtone.mp3")
         pygame.mixer.music.play()
-        while pygame.mixer.music.get_busy() is True:
+        while pygame.mixer.music.get_busy() == True:
             if (arduino.in_waiting):
-                received_line = arduino.readline().decode("utf-8")[1:-2]
-                if (received_line == "PICKED_UP"):
+                received_line = arduino.readline().decode("utf-8")[:-1]
+                print(received_line)
+                if (received_line == "<PICKED_UP>"):
                     pygame.mixer.music.stop()
                     GPIO.output(MP3_PLAYING_PIN, 0)
             time.sleep(0.005)
@@ -83,7 +84,7 @@ def playWrongNumber():
     GPIO.output(MP3_PLAYING_PIN, 1)
     pygame.mixer.music.load("/home/pi/escape_phone_app/Audio Files/Wrong Number Message.mp3")
     pygame.mixer.music.play()
-    while pygame.mixer.music.get_busy() is True:
+    while pygame.mixer.music.get_busy() == True:
         if (arduino.in_waiting):
             received_line = arduino.readline().decode("utf-8")[1:-2]
             if (received_line == "STOP"):
@@ -96,33 +97,34 @@ def playWrongNumber():
 
 
 def send_settings():
+    global phone_settings
     trigger_settings.clear()
     active_phone = None
     for k in range(len(phones_list)):
-        if phones_list[k].isActive is True:
+        if phones_list[k].isActive == True:
             active_phone = k
             break
 
     phone_settings = "<PHONE,"
-    if active_phone is None:
+    if active_phone == None:
         phone_settings += "0,0,0,0,0>"
     else:
-        if phones_list[active_phone].ringer is True:
+        if phones_list[active_phone].ringer == True:
             phone_settings += '1,'
         else:
             phone_settings += '0,'
 
-        if phones_list[active_phone].dialTone is True:
+        if phones_list[active_phone].dialTone == True:
             phone_settings += '1,'
         else:
             phone_settings += '0,'
 
-        if phones_list[active_phone].ringerMessage is True:
+        if phones_list[active_phone].ringerMessage == True:
             phone_settings += '1,'
         else:
             phone_settings += '0,'
 
-        if phones_list[active_phone].wrongNumberMessage is True:
+        if phones_list[active_phone].wrongNumberMessage == True:
             phone_settings += '1,'
         else:
             phone_settings += '0,'
@@ -130,13 +132,13 @@ def send_settings():
         count = 0
         for j in range(len(triggers_list)):
             if ((triggers_list[j].id // 100) == phones_list[active_phone].number) and (
-                    triggers_list[j].isActive is True):
+                    triggers_list[j].isActive == True):
                 temp_trigger = "<TRIGGER,"
                 for l in triggers_list[j].unlockCode:
                     temp_trigger += str(l)
                 temp_trigger += ',' + str(triggers_list[j].id) + ',' + str(triggers_list[j].triggerMessage) + ','
 
-                if triggers_list[j].relayMode is None:
+                if triggers_list[j].relayMode == None:
                     temp_trigger += '0,'
                 elif triggers_list[j].relayMode == "time":
                     temp_trigger += '1,'
@@ -166,6 +168,7 @@ def send_settings():
 
 
 get_phone_settings()
+send_settings()
 
 while True:
     if (arduino.in_waiting):

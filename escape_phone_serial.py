@@ -177,12 +177,19 @@ while True:
             time.sleep(.005)
             triggerNum = arduino.readline().decode("utf-8")[1:-2]
             try:
-                number = int(triggerNum)
-                audioName = triggerNum + ".mp3"
-                playAudio(audioName)
+                trig_id = int(triggerNum)
+                
+                for i in range(len(triggers_list)):
+                    if triggers_list[i].id == trig_id:
+                        audioName = triggers_list[i].messageFile
+                        break
+                if audioName == None:
+                    playAudio("NO TRIGGER MP3.mp3")
+                else:
+                    playAudio(audioName)
 
             except ValueError:
-                print("The trigger number that was sent in not an int.")
+                print("The trigger id that was sent in not an int.")
                 print("Value Received", triggerNum)
         elif (received == '<RING>'):
             print("ringing")
@@ -214,7 +221,7 @@ while True:
                         print("Did not receive the <NEXT> command.  Received:", received)
                         break
         elif (received == '<RING MESSAGE>'):
-            playAudio("Ring Message.mp3")
+            playAudio("RING MESSAGE.mp3")
         else:
             print(received)
     time.sleep(0.001)

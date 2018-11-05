@@ -26,7 +26,6 @@
       "trigger message": 1,
       "relay mode": "time",
       "relay active time": 1,
-      "relay active": true,
       "relay message timing": "beginning",
       "message file": "treasure.mp3"
     },
@@ -46,9 +45,26 @@
       "trigger message": 1,
       "relay mode": "time",
       "relay active time": 5,
-      "relay active": true,
       "relay message timing": "beginning",
       "message file": "jail.mp3"
+    },
+    {
+      "number": 3,
+      "id": 103,
+      "name" : "No Name",
+      "unlock code": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "is active": true,
+      "trigger message": 1,
+      "relay mode": "time",
+      "relay active time": 7,
+      "relay message timing": "end",
+      "message file": null
     }
   ]
 }

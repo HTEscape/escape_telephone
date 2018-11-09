@@ -178,7 +178,7 @@ while True:
             triggerNum = arduino.readline().decode("utf-8")[1:-2]
             try:
                 trig_id = int(triggerNum)
-                
+                audioName = None
                 for i in range(len(triggers_list)):
                     if triggers_list[i].id == trig_id:
                         audioName = triggers_list[i].messageFile
@@ -222,6 +222,15 @@ while True:
                         break
         elif (received == '<RING MESSAGE>'):
             playAudio("RING MESSAGE.mp3")
+        elif (received == '<RESET RELAY>'):
+            print("Relay Has Been Reset")
+            playAudio("RESET RELAY.mp3")
+        elif (received == '<WIFI>'):
+            print("Starting Access Point")
+            playAudio("WIFI ACCESS POINT.mp3")
+        elif (received == '<DEFAULT WIFI>'):
+            print("WIFI Settings have been restored to factory condition")
+            playAudio("DEFAULT WIFI.mp3")
         else:
             print(received)
     time.sleep(0.001)

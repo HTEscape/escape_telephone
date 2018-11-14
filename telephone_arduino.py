@@ -23,7 +23,7 @@ class trigger:
         self.number = number
         self.id = id
         self.name = name
-        if (unlockCode is None):
+        if (unlockCode == None):
             self.unlockCode = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, '*', '#']
         else:
             self.unlockCode = list(unlockCode)

@@ -231,6 +231,45 @@ while True:
         elif (received == '<DEFAULT WIFI>'):
             print("WIFI Settings have been restored to factory condition")
             playAudio("DEFAULT WIFI.mp3")
+        elif (received == '<TEST SERIAL DATA>'):
+            print("Testing serial data between Pi and Arduino...")
+            print("Now sending Send Current Telephone Settings command.")
+            arduino.write(b"<T>")
+            while arduino.in_waiting == 0:
+                time.sleep(.01)
+            received = arduino.readline().decode("utf-8")[:-1]
+            print(received)
+            print("Now sending Update Telephone Settings command.")
+            arduino.write(b"<U>")
+            while arduino.in_waiting == 0:
+                time.sleep(.01)
+            received = arduino.readline().decode("utf-8")[:-1]
+            print(received)
+            print("Now sending Send compile information command.")
+            arduino.write(b"<C>")
+            while arduino.in_waiting == 0:
+                time.sleep(.01)
+            received = arduino.readline().decode("utf-8")[:-1]
+            print(received)
+            print("Now sending Factory Reset command.")
+            arduino.write(b"<R>")
+            while arduino.in_waiting == 0:
+                time.sleep(.01)
+            received = arduino.readline().decode("utf-8")[:-1]
+            print(received)
+            print("Now testing the default catch all statement.")
+            arduino.write(b"<Z>")
+            while arduino.in_waiting == 0:
+                time.sleep(.01)
+            received = arduino.readline().decode("utf-8")[:-1]
+            print(received)
+            print("Now testing the length check if else statements.")
+            arduino.write(b"<ABCDEFG>")
+            while arduino.in_waiting == 0:
+                time.sleep(.01)
+            received = arduino.readline().decode("utf-8")[:-1]
+            print(received)
+
         else:
             print(received)
     time.sleep(0.001)

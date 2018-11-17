@@ -222,6 +222,9 @@ while True:
                         break
         elif (received == '<RING MESSAGE>'):
             playAudio("RING MESSAGE.mp3")
+        elif (received == '<PHONE CODES>'):
+            print("Enter Control Codes...")
+            playAudio("CONTROL CODE.mp3")
         elif (received == '<RESET RELAY>'):
             print("Relay Has Been Reset")
             playAudio("RESET RELAY.mp3")
